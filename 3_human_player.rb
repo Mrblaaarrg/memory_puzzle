@@ -1,6 +1,5 @@
 class HumanPlayer
     def initialize
-        @guess_pos = []
     end
 
     def make_guess

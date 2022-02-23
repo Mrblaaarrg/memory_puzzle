@@ -9,7 +9,7 @@ class Game
         @board = Board.new(num_pairs)
         @board.populate
         @board.get_legal_guesses
-        @player = player_type == "human" ? HumanPlayer.new : AiPlayer.new
+        @player = player_type == "human" ? HumanPlayer.new : AiPlayer.new(@board)
         @last_guess = []
     end
 
@@ -79,9 +79,11 @@ if __FILE__ == $PROGRAM_NAME
     system("clear")
 
     puts "Welcome to Memory Puzzle!\n"
+    puts "Select player type between human or computer (h/c):"
+    player_type = gets.chomp.downcase == "h" ? "human" : "ai"
     puts "Enter the number of pairs to find:"
     num_pairs = gets.chomp.to_i
-    memory_game = Game.new(num_pairs)
+    memory_game = Game.new(num_pairs, player_type)
     puts "\nGreat! Take a good look at the cards before beginning:"
     memory_game.board.hint
     sleep(6)
