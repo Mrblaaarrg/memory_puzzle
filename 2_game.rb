@@ -16,7 +16,7 @@ class Game
     attr_accessor :board, :last_guess
 
     def get_guess
-        @player.make_guess
+        @last_guess.empty? ? @player.make_first_guess : @player.make_second_guess
     end
 
     def playable_guess?(guess_pos)
@@ -49,27 +49,42 @@ class Game
         guess_pos
     end
 
+    def update_last_guess(guess_pos)
+        if @last_guess.empty?
+            @last_guess = guess_pos
+            return true
+        end
+        false
+    end
+
+    def process_wrong_guesses(guess_pos)
+        @board.hide(@last_guess)
+        @board.hide(guess_pos)
+        @last_guess = []
+    end
+
+    def process_correct_guesses(guess_pos)
+        card = @board[guess_pos]
+        @board.pair_found(card)
+        @last_guess = []
+    end    
+
     def play
         until self.game_over?
             guess_pos = self.get_valid_move
 
             @board.reveal(guess_pos)
             self.refresh
-
-            if @last_guess.empty?
-                @last_guess = guess_pos
-            elsif @board[@last_guess] == @board[guess_pos]
-                puts "\nCorrect!"
-                sleep(1)
-                card = @board[guess_pos]
-                @board.pair_found(card)
-                @last_guess = []
-            else
-                puts "\nWrong guess, try again!"
-                sleep(1)
-                @board.hide(@last_guess)
-                @board.hide(guess_pos)
-                @last_guess = []
+            unless self.update_last_guess(guess_pos)
+                if @board[@last_guess] == @board[guess_pos]
+                    puts "\nCorrect!"
+                    sleep(1)
+                    self.process_correct_guesses(guess_pos)
+                else
+                    puts "\nWrong guess, try again!"
+                    sleep(1)
+                    self.process_wrong_guesses(guess_pos)
+                end
             end
         end
     end
