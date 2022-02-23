@@ -22,6 +22,7 @@ class Game
     def playable_guess?(guess_pos)
         unless @board.legal_guesses.include?(guess_pos)
             puts "That card is already face up, please choose another one"
+            sleep(1)
             return false
         end
         true
