@@ -1,4 +1,3 @@
-require "byebug"
 require_relative "0_card"
 require_relative "1_board"
 require_relative "3_human_player"

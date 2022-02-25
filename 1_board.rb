@@ -1,4 +1,3 @@
-require "byebug"
 require_relative "0_card"
 
 class Board
