@@ -11,6 +11,7 @@ class Game
         @board.get_legal_guesses
         @player = player_type == "human" ? HumanPlayer.new : AiPlayer.new(@board)
         @last_guess = []
+        @turns_left = num_pairs * 4
     end
 
     attr_accessor :board, :last_guess
@@ -29,6 +30,11 @@ class Game
     end
 
     def game_over?
+        if @turns_left <= 0
+            puts "\nNo more turns left! You lose!"
+            return true
+        end
+
         puts "\nGame Over!" if @board.won?
         puts
         @board.won?
@@ -36,6 +42,8 @@ class Game
 
     def refresh
         system("clear")
+        puts "\nYou have #{@turns_left} turns remaining"
+        puts
         @board.render
     end
 
@@ -70,6 +78,7 @@ class Game
     end    
 
     def play
+        turns_left = @turn_limit
         until self.game_over?
             guess_pos = self.get_valid_move
 
@@ -84,8 +93,9 @@ class Game
                     puts "\nWrong guess, try again!"
                     sleep(1)
                     self.process_wrong_guesses(guess_pos)
+                    @turns_left -= 1
                 end
-            end
+            end 
         end
     end
 end
